@@ -1,0 +1,40 @@
+{
+    "name": "今天吃什麼？",
+    "short_name": "美食選擇器",
+    "description": "隨機選擇今天要吃什麼，支援自訂食物清單",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#6a11cb",
+    "theme_color": "#6a11cb",
+    "orientation": "portrait",
+    "categories": ["food", "lifestyle", "productivity"],
+    "lang": "zh-Hant",
+    "icons": [
+        {
+            "src": "icons/icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "icons/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "icons/maskable-icon.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "screenshots/screenshot1.png",
+            "sizes": "640x320",
+            "type": "image/png",
+            "form_factor": "wide"
+        }
+    ]
+}

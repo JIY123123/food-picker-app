@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>今天吃什麼？ - 美食決策助手</title>
+    <meta name="description" content="隨機選擇今天要吃什麼，支援自訂食物清單">
+    <meta name="theme-color" content="#6a11cb">
+    
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="icons/icon-192.png">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>今天吃什麼？</h1>
+            <p class="subtitle">讓命運決定你的下一餐</p>
+        </header>
+        
+        <div class="tabs">
+            <div class="tab active" data-tab="picker">
+                <i class="fas fa-random"></i>
+                <span>隨機選擇</span>
+            </div>
+            <div class="tab" data-tab="manage">
+                <i class="fas fa-utensils"></i>
+                <span>管理食物</span>
+            </div>
+            <div class="tab" data-tab="share">
+                <i class="fas fa-share-alt"></i>
+                <span>分享App</span>
+            </div>
+        </div>
+        
+        <div class="content">
+            <!-- 隨機選擇頁面 -->
+            <div class="page active" id="picker-page">
+                <div class="step active" id="step1">
+                    <h2>選擇餐點類型</h2>
+                    <div class="options">
+                        <div class="option-card" data-value="meal">
+                            <div class="option-icon">
+                                <i class="fas fa-utensils"></i>
+                            </div>
+                            <div class="option-name">正餐</div>
+                        </div>
+                        <div class="option-card" data-value="snack">
+                            <div class="option-icon">
+                                <i class="fas fa-ice-cream"></i>
+                            </div>
+                            <div class="option-name">點心</div>
+                        </div>
+                    </div>
+                    <button class="btn" id="next1" disabled>下一步</button>
+                </div>
+                
+                <div class="step" id="step2">
+                    <h2>選擇食物類型</h2>
+                    <div class="options" id="meal-options"></div>
+                    <div class="options" id="snack-options" style="display:none;"></div>
+                    <button class="btn" id="next2" disabled>開始抽獎</button>
+                    <button class="btn btn-secondary" id="back1">上一步</button>
+                </div>
+                
+                <div class="step" id="step3">
+                    <h2>決定你的美食！</h2>
+                    <div class="progress-bar">
+                        <div class="progress" id="progress"></div>
+                    </div>
+                    <div class="spinner" id="spinner"></div>
+                    <div class="result-container" id="result" style="display:none;">
+                        <div class="result-title">今天推薦你吃：</div>
+                        <div class="result-main" id="final-result"></div>
+                        <div class="other-options">
+                            <div class="other-option" id="option1"></div>
+                            <div class="other-option" id="option2"></div>
+                        </div>
+                    </div>
+                    <button class="btn" id="reset">再抽一次</button>
+                    <button class="btn btn-secondary" id="back2">上一步</button>
+                </div>
+            </div>
+            
+            <!-- 管理食物頁面 -->
+            <div class="page" id="manage-page">
+                <h2>管理食物選項</h2>
+                
+                <div class="form-container">
+                    <div class="form-group">
+                        <label for="food-name">食物名稱</label>
+                        <input type="text" id="food-name" placeholder="輸入食物名稱">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="food-type">食物類型</label>
+                        <select id="food-type">
+                            <option value="">選擇類型</option>
+                            <option value="meal-rice">正餐 - 飯類</option>
+                            <option value="meal-noodle">正餐 - 麵類</option>
+                            <option value="meal-other">正餐 - 其他</option>
+                            <option value="snack-sweet">點心 - 甜食</option>
+                            <option value="snack-salty">點心 - 鹹食</option>
+                            <option value="snack-drink">點心 - 飲品</option>
+                        </select>
+                    </div>
+                    
+                    <button class="btn" id="add-food">
+                        <i class="fas fa-plus"></i>
+                        新增食物
+                    </button>
+                </div>
+                
+                <div class="food-list-container">
+                    <h3>我的食物清單</h3>
+                    <div class="food-list" id="food-list"></div>
+                </div>
+            </div>
+            
+            <!-- 分享頁面 -->
+            <div class="page" id="share-page">
+                <h2>分享這個App</h2>
+                
+                <div class="share-container">
+                    <div class="share-card">
+                        <div class="share-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h3>安裝到手機</h3>
+                        <p>點擊下方按鈕將App安裝到手機主畫面</p>
+                        <button class="btn" id="install-btn">
+                            <i class="fas fa-download"></i>
+                            安裝App
+                        </button>
+                    </div>
+                    
+                    <div class="share-card">
+                        <div class="share-icon">
+                            <i class="fas fa-share-alt"></i>
+                        </div>
+                        <h3>分享給朋友</h3>
+                        <p>透過連結分享這個美食選擇器</p>
+                        <button class="btn btn-secondary" id="share-link-btn">
+                            <i class="fas fa-link"></i>
+                            複製分享連結
+                        </button>
+                    </div>
+                    
+                    <div class="share-card">
+                        <div class="share-icon">
+                            <i class="fas fa-qrcode"></i>
+                        </div>
+                        <h3>QR Code</h3>
+                        <p>掃描 QR Code 快速訪問</p>
+                        <div class="qrcode-container">
+                            <div id="qrcode"></div>
+                            <div class="qrcode-instruction">
+                                <i class="fas fa-mobile-alt"></i>
+                                <span>用手機相機掃描即可安裝</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span id="notification-text">操作成功！</span>
+    </div>
+
+    <!-- JavaScript -->
+    
+    <script src="js/db.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
