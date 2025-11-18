@@ -162,20 +162,23 @@ class FoodPickerApp {
         }
     }
 
-    initUI() {
-        console.log('🎨 初始化 UI...');
-        
-        // 檢查必要元素
-        const checkElements = ['meal-options', 'snack-options', 'qrcode'];
-        checkElements.forEach(id => {
-            const element = document.getElementById(id);
-            console.log(`元素 ${id}:`, element ? '✅ 找到' : '❌ 未找到');
-        });
-        
-        this.initOptionCards();
-        this.generateQRCode();
-        console.log('✅ UI 初始化完成');
-    }
+  initUI() {
+    console.log('🎨 初始化 UI...');
+    
+    // 初始化步驟3狀態
+    this.resetStep3State();
+    
+    // 檢查必要元素
+    const checkElements = ['meal-options', 'snack-options', 'qrcode'];
+    checkElements.forEach(id => {
+        const element = document.getElementById(id);
+        console.log(`元素 ${id}:`, element ? '✅ 找到' : '❌ 未找到');
+    });
+    
+    this.initOptionCards();
+    this.generateQRCode();
+    console.log('✅ UI 初始化完成');
+}
 
     // 初始化選項卡片
     initOptionCards() {
@@ -266,10 +269,10 @@ class FoodPickerApp {
         // 按鈕事件 - 逐個檢查
         const buttons = [
             { id: 'next1', method: () => this.goToStep(2) },
-            { id: 'next2', method: () => this.startLottery() },
-            { id: 'back1', method: () => this.goToStep(1) },
-            { id: 'back2', method: () => this.goToStep(2) },
-            { id: 'reset', method: () => this.startLottery() },
+        { id: 'next2', method: () => this.goToStep(3) }, // 只是切換到步驟3，不開始抽獎
+        { id: 'back1', method: () => this.goToStep(1) },
+        { id: 'back2', method: () => this.goToStep(2) },
+        { id: 'reset', method: () => this.startLottery() }, // 點擊「再抽一次」才開始抽獎
             { id: 'add-food', method: () => this.addFood() },
             { id: 'install-btn', method: () => this.installPWA() },
             { id: 'share-link-btn', method: () => this.shareLink() }
@@ -324,6 +327,7 @@ class FoodPickerApp {
 
     // 切換步驟
     
+g// 切換步驟
 goToStep(step) {
     console.log(`🔄 切換到步驟: ${step}`, '當前選擇:', this.currentSelection);
     
@@ -339,8 +343,6 @@ goToStep(step) {
     if (currentStep) {
         currentStep.classList.add('active');
         console.log(`✅ 顯示步驟: ${currentStep.id}`);
-    } else {
-        console.error(`❌ 找不到步驟: step${step}`);
     }
     
     // 步驟2的特殊處理
@@ -361,78 +363,186 @@ goToStep(step) {
         }
     }
     
-    // 步驟3的特殊處理 - 開始抽獎
-    if (step === 3) {
-        console.log('🎰 進入抽獎步驟');
-        // 延遲開始抽獎，確保動畫流暢
-        setTimeout(() => {
-            this.startLottery();
-        }, 400);
+    // 步驟3的特殊處理 - 重置狀態，但不自動開始抽獎
+    // 步驟3的特殊處理
+if (step === 3) {
+    console.log('🎰 進入結果步驟 - 自動開始抽獎');
+    console.log('🔍 當前選擇:', this.currentSelection);
+    
+    // 重置狀態
+    this.resetStep3State();
+    
+    // 確保有選擇類型
+    if (!this.currentSelection.fullType) {
+        console.warn('⚠️ 沒有選擇類型，回到步驟2');
+        this.showNotification('請先選擇食物類型', 'warning');
+        this.goToStep(2);
+        return;
+    }
+    
+    // 延遲開始抽獎
+    setTimeout(() => {
+        console.log('🚀 開始抽獎');
+        this.startLottery();
+    }, 300);
+}
+}
+
+// 重置步驟3狀態
+
+resetStep3State() {
+    const spinner = document.getElementById('spinner');
+    const result = document.getElementById('result');
+    const progress = document.getElementById('progress');
+    
+    // 重置顯示狀態 - 確保正確的初始狀態
+    if (spinner) {
+        spinner.style.display = 'block'; // 顯示轉圈動畫
+    }
+    if (result) {
+        result.style.display = 'none';   // 隱藏結果
+    }
+    if (progress) {
+        progress.style.width = '0%';     // 進度條歸零
+    }
+    
+    console.log('🔄 步驟3狀態已重置 - 顯示動畫，隱藏結果');
+}
+
+// 開始抽獎（用戶點擊「開始抽獎」或「再抽一次」時呼叫）
+// 開始抽獎
+// 漸進加速版本 - 開始慢，後面快
+async startLottery() {
+    console.log('🎰 開始抽獎流程 - 漸進加速版');
+    
+    const spinner = document.getElementById('spinner');
+    const result = document.getElementById('result');
+    const progress = document.getElementById('progress');
+    
+    // 重置狀態
+    if (spinner) spinner.style.display = 'block';
+    if (result) result.style.display = 'none';
+    if (progress) progress.style.width = '0%';
+    
+    let progressValue = 0;
+    let speed = 8; // 初始速度
+    
+    const progressInterval = setInterval(() => {
+        // 隨著進度增加速度
+        const currentSpeed = speed + (progressValue / 100) * 25;
+        progressValue += Math.random() * currentSpeed + 5;
+        
+        if (progress) {
+            progress.style.width = `${Math.min(progressValue, 100)}%`;
+        }
+        
+        if (progressValue >= 100) {
+            clearInterval(progressInterval);
+            console.log('📊 進度條完成');
+            setTimeout(() => this.showResult(), 250);
+        }
+    }, 120);
+}
+
+// 顯示結果
+// 顯示結果
+async showResult() {
+    console.log('🎯 開始顯示結果');
+    
+    const spinner = document.getElementById('spinner');
+    const result = document.getElementById('result');
+    const finalResult = document.getElementById('final-result');
+    const option1 = document.getElementById('option1');
+    const option2 = document.getElementById('option2');
+    
+    console.log('🔍 結果元素狀態:', {
+        spinner: spinner ? '找到' : '未找到',
+        result: result ? '找到' : '未找到',
+        finalResult: finalResult ? '找到' : '未找到',
+        option1: option1 ? '找到' : '未找到',
+        option2: option2 ? '找到' : '未找到'
+    });
+    
+    // 隱藏動畫，顯示結果
+    if (spinner) {
+        spinner.style.display = 'none';
+        console.log('✅ 隱藏轉圈動畫');
+    }
+    
+    if (result) {
+        result.style.display = 'block';
+        console.log('✅ 顯示結果容器');
+    }
+    
+    try {
+        console.log('🔄 獲取隨機食物...');
+        const foods = await this.getRandomFoods();
+        console.log('🍽️ 獲取到的食物:', foods);
+        
+        if (finalResult) {
+            finalResult.textContent = foods[0];
+            console.log('✅ 設置主要結果:', foods[0]);
+        }
+        
+        if (option1) {
+            option1.textContent = foods[1];
+            console.log('✅ 設置選項1:', foods[1]);
+        }
+        
+        if (option2) {
+            option2.textContent = foods[2];
+            console.log('✅ 設置選項2:', foods[2]);
+        }
+        
+        console.log('🎉 結果顯示完成');
+        
+    } catch (error) {
+        console.error('❌ 獲取食物失敗:', error);
+        
+        if (finalResult) finalResult.textContent = '獲取失敗';
+        if (option1) option1.textContent = '請檢查網路';
+        if (option2) option2.textContent = '或重新整理';
+        
+        console.log('🔄 顯示錯誤訊息');
     }
 }
 
-    // 開始抽獎
-    async startLottery() {
-        console.log('🎰 開始抽獎');
-        this.goToStep(3);
-        
-        const spinner = document.getElementById('spinner');
-        const result = document.getElementById('result');
-        const progress = document.getElementById('progress');
-        
-        spinner.style.display = 'block';
-        result.style.display = 'none';
-        progress.style.width = '0%';
-        
-        // 進度條動畫
-        let progressValue = 0;
-        const progressInterval = setInterval(() => {
-            progressValue += Math.random() * 15;
-            progress.style.width = `${Math.min(progressValue, 100)}%`;
-            
-            if (progressValue >= 100) {
-                clearInterval(progressInterval);
-                setTimeout(() => this.showResult(), 500);
-            }
-        }, 200);
-    }
-
-    // 顯示結果
-    async showResult() {
-        const spinner = document.getElementById('spinner');
-        const result = document.getElementById('result');
-        
-        spinner.style.display = 'none';
-        result.style.display = 'block';
-        
-        try {
-            const foods = await this.getRandomFoods();
-            document.getElementById('final-result').textContent = foods[0];
-            document.getElementById('option1').textContent = foods[1];
-            document.getElementById('option2').textContent = foods[2];
-        } catch (error) {
-            console.error('❌ 獲取食物失敗:', error);
-            document.getElementById('final-result').textContent = '獲取失敗';
-            document.getElementById('option1').textContent = '請檢查網路';
-            document.getElementById('option2').textContent = '或重新整理';
-        }
-    }
-
     // 獲取隨機食物
-    async getRandomFoods() {
+    a// 獲取隨機食物
+async getRandomFoods() {
+    console.log('🔄 開始獲取隨機食物，類型:', this.currentSelection.fullType);
+    
+    if (!this.currentSelection.fullType) {
+        console.warn('❌ 沒有選擇食物類型');
+        return ['請先選擇', '食物類型', '再試一次'];
+    }
+    
+    try {
         const foods = await foodDB.getFoodsByType(this.currentSelection.fullType);
+        console.log('📊 從資料庫獲取的食物:', foods);
         
         if (foods.length === 0) {
+            console.warn('⚠️ 該類型沒有食物');
             return ['暫無選項', '請新增食物', '到管理頁面'];
         }
         
         if (foods.length <= 3) {
-            return foods.map(food => food.name).concat(Array(3 - foods.length).fill('暫無選項'));
+            const result = foods.map(food => food.name).concat(Array(3 - foods.length).fill('暫無選項'));
+            console.log('📝 食物不足3個，結果:', result);
+            return result;
         }
         
         const shuffled = [...foods].sort(() => 0.5 - Math.random());
-        return shuffled.slice(0, 3).map(food => food.name);
+        const selectedFoods = shuffled.slice(0, 3).map(food => food.name);
+        console.log('🎲 隨機選擇的食物:', selectedFoods);
+        
+        return selectedFoods;
+        
+    } catch (error) {
+        console.error('❌ 獲取食物資料失敗:', error);
+        return ['資料庫錯誤', '請重新整理', '頁面'];
     }
+}
 
     // 載入食物列表
     async loadFoods() {
