@@ -28,13 +28,5 @@
             "type": "image/png",
             "purpose": "maskable"
         }
-    ],
-    "screenshots": [
-        {
-            "src": "screenshots/screenshot1.png",
-            "sizes": "640x320",
-            "type": "image/png",
-            "form_factor": "wide"
-        }
     ]
 }

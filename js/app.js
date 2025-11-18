@@ -13,6 +13,8 @@ class FoodPickerApp {
 
     async init() {
         try {
+            console.log('🚀 應用初始化開始...');
+            
             // 初始化資料庫
             await foodDB.init();
             
@@ -24,19 +26,157 @@ class FoodPickerApp {
             // 載入食物列表
             await this.loadFoods();
             
-            console.log('應用初始化完成');
+            console.log('✅ 應用初始化完成');
         } catch (error) {
-            console.error('應用初始化失敗:', error);
+            console.error('❌ 應用初始化失敗:', error);
             this.showNotification('應用初始化失敗，請重新整理頁面', 'error');
         }
     }
 
-  initUI() {
-    this.initOptionCards();
-    
-    // 直接生成 QR Code，不需要延遲
-    this.generateQRCode();
-}
+    // 檢測裝置平台
+    detectPlatform() {
+        const userAgent = navigator.userAgent.toLowerCase();
+        const platform = navigator.platform.toLowerCase();
+        
+        // 檢測 iOS
+        const isIOS = /iphone|ipad|ipod/.test(userAgent) || 
+                      (/mac/.test(platform) && navigator.maxTouchPoints > 1);
+        
+        // 檢測 Android
+        const isAndroid = /android/.test(userAgent);
+        
+        console.log('📱 平台檢測結果:', { 
+            userAgent: navigator.userAgent,
+            platform: navigator.platform,
+            isIOS, 
+            isAndroid 
+        });
+        
+        return {
+            isIOS,
+            isAndroid,
+            isOther: !isIOS && !isAndroid
+        };
+    }
+
+    // 設定平台指引
+    setupPlatformGuide() {
+        const platform = this.detectPlatform();
+        const iosGuide = document.getElementById('ios-install-guide');
+        const androidGuide = document.getElementById('android-install-guide');
+        const installBtn = document.getElementById('install-btn');
+        
+        console.log('🛠️ 設定平台指引:', platform);
+        
+        // 重置顯示狀態
+        if (iosGuide) iosGuide.style.display = 'none';
+        if (androidGuide) androidGuide.style.display = 'none';
+        if (installBtn) installBtn.style.display = 'none';
+        
+        // 根據平台顯示指引
+        if (platform.isIOS) {
+            console.log('🍎 檢測到 iOS 設備');
+            if (iosGuide) {
+                iosGuide.style.display = 'block';
+                iosGuide.classList.add('ios-guide');
+            }
+            if (installBtn) {
+                installBtn.style.display = 'none';
+            }
+        } else if (platform.isAndroid) {
+            console.log('🤖 檢測到 Android 設備');
+            if (androidGuide) {
+                androidGuide.style.display = 'block';
+                androidGuide.classList.add('android-guide');
+            }
+            if (installBtn && this.deferredPrompt) {
+                installBtn.style.display = 'flex';
+            }
+        } else {
+            console.log('💻 檢測到其他平台');
+            if (iosGuide) {
+                iosGuide.style.display = 'block';
+                iosGuide.classList.add('ios-guide');
+            }
+            if (androidGuide) {
+                androidGuide.style.display = 'block';
+                androidGuide.classList.add('android-guide');
+            }
+            if (installBtn && this.deferredPrompt) {
+                installBtn.style.display = 'flex';
+            }
+        }
+        
+        this.showPlatformHint(platform);
+    }
+
+    // 顯示平台提示
+    showPlatformHint(platform) {
+        console.log('💡 顯示平台提示:', platform);
+        
+        // 移除現有提示
+        const existingHint = document.querySelector('.platform-hint');
+        if (existingHint) {
+            existingHint.remove();
+        }
+        
+        const sharePage = document.getElementById('share-page');
+        if (!sharePage) {
+            console.warn('❌ 找不到分享頁面');
+            return;
+        }
+        
+        const hint = document.createElement('div');
+        
+        if (platform.isIOS) {
+            hint.className = 'platform-hint ios';
+            hint.innerHTML = `
+                <i class="fas fa-apple"></i>
+                <strong>檢測到 iOS 設備：</strong>請使用 Safari 的「加入主畫面」功能安裝
+            `;
+            console.log('📱 顯示 iOS 安裝指引');
+        } else if (platform.isAndroid) {
+            hint.className = 'platform-hint android';
+            hint.innerHTML = `
+                <i class="fab fa-android"></i>
+                <strong>檢測到 Android 設備：</strong>點擊「安裝App」按鈕或等待瀏覽器提示
+            `;
+            console.log('🤖 顯示 Android 安裝指引');
+        } else {
+            hint.className = 'platform-hint';
+            hint.innerHTML = `
+                <i class="fas fa-info-circle"></i>
+                <strong>提示：</strong>請用手機瀏覽器訪問此頁面以安裝App
+            `;
+            console.log('💻 顯示通用安裝指引');
+        }
+        
+        // 安全地插入到分享頁面頂部
+        const firstCard = sharePage.querySelector('.share-card');
+        if (firstCard && firstCard.parentNode === sharePage) {
+            sharePage.insertBefore(hint, firstCard);
+        } else {
+            // 如果找不到合適的插入位置，添加到開頭
+            sharePage.insertBefore(hint, sharePage.firstChild);
+            console.log('使用備用插入方式');
+        }
+    }
+
+    initUI() {
+        console.log('🎨 初始化 UI...');
+        
+        // 檢查必要元素
+        const checkElements = ['meal-options', 'snack-options', 'qrcode'];
+        checkElements.forEach(id => {
+            const element = document.getElementById(id);
+            console.log(`元素 ${id}:`, element ? '✅ 找到' : '❌ 未找到');
+        });
+        
+        this.initOptionCards();
+        this.generateQRCode();
+        console.log('✅ UI 初始化完成');
+    }
+
     // 初始化選項卡片
     initOptionCards() {
         const mealCategories = [
@@ -57,6 +197,11 @@ class FoodPickerApp {
 
     renderOptionCards(containerId, categories) {
         const container = document.getElementById(containerId);
+        if (!container) {
+            console.warn(`❌ 找不到容器: ${containerId}`);
+            return;
+        }
+        
         container.innerHTML = '';
 
         categories.forEach(cat => {
@@ -76,8 +221,16 @@ class FoodPickerApp {
 
     // 設定事件監聽
     setupEventListeners() {
-        // 標籤頁切換
-        document.querySelectorAll('.tab').forEach(tab => {
+        console.log('🎯 開始設定事件監聽器...');
+        
+        // 標籤頁切換 - 安全檢查
+        const tabs = document.querySelectorAll('.tab');
+        if (tabs.length === 0) {
+            console.warn('❌ 未找到標籤頁元素');
+            return;
+        }
+        
+        tabs.forEach(tab => {
             tab.addEventListener('click', (e) => {
                 const tabName = e.currentTarget.dataset.tab;
                 this.switchTab(tabName);
@@ -110,26 +263,45 @@ class FoodPickerApp {
             }
         });
 
-        // 按鈕事件
-        document.getElementById('next1').addEventListener('click', () => this.goToStep(2));
-        document.getElementById('next2').addEventListener('click', () => this.startLottery());
-        document.getElementById('back1').addEventListener('click', () => this.goToStep(1));
-        document.getElementById('back2').addEventListener('click', () => this.goToStep(2));
-        document.getElementById('reset').addEventListener('click', () => this.startLottery());
-        
-        // 食物管理
-        document.getElementById('add-food').addEventListener('click', () => this.addFood());
-        document.getElementById('food-name').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') this.addFood();
+        // 按鈕事件 - 逐個檢查
+        const buttons = [
+            { id: 'next1', method: () => this.goToStep(2) },
+            { id: 'next2', method: () => this.startLottery() },
+            { id: 'back1', method: () => this.goToStep(1) },
+            { id: 'back2', method: () => this.goToStep(2) },
+            { id: 'reset', method: () => this.startLottery() },
+            { id: 'add-food', method: () => this.addFood() },
+            { id: 'install-btn', method: () => this.installPWA() },
+            { id: 'share-link-btn', method: () => this.shareLink() }
+        ];
+
+        buttons.forEach(btnConfig => {
+            const button = document.getElementById(btnConfig.id);
+            if (button) {
+                button.addEventListener('click', btnConfig.method);
+                console.log(`✅ 綁定按鈕: ${btnConfig.id}`);
+            } else {
+                console.warn(`❌ 找不到按鈕: ${btnConfig.id}`);
+            }
         });
 
-        // 分享功能
-        document.getElementById('install-btn').addEventListener('click', () => this.installPWA());
-        document.getElementById('share-link-btn').addEventListener('click', () => this.shareLink());
+        // 食物名稱輸入框 Enter 事件
+        const foodNameInput = document.getElementById('food-name');
+        if (foodNameInput) {
+            foodNameInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') this.addFood();
+            });
+        } else {
+            console.warn('❌ 找不到食物名稱輸入框');
+        }
+
+        console.log('✅ 事件監聽器設定完成');
     }
 
     // 切換標籤頁
     switchTab(tabName) {
+        console.log(`🔄 切換到標籤頁: ${tabName}`);
+        
         // 更新活躍標籤
         document.querySelectorAll('.tab').forEach(tab => {
             tab.classList.remove('active');
@@ -141,29 +313,67 @@ class FoodPickerApp {
             page.classList.remove('active');
         });
         document.getElementById(`${tabName}-page`).classList.add('active');
-    }
-
-    // 切換步驟
-    goToStep(step) {
-        document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-        document.getElementById(`step${step}`).classList.add('active');
         
-        if (step === 2) {
-            const mealOptions = document.getElementById('meal-options');
-            const snackOptions = document.getElementById('snack-options');
-            
-            if (this.currentSelection.type === 'meal') {
-                mealOptions.style.display = 'flex';
-                snackOptions.style.display = 'none';
-            } else {
-                mealOptions.style.display = 'none';
-                snackOptions.style.display = 'flex';
-            }
+        // 如果切換到分享頁面，設置平台指引
+        if (tabName === 'share') {
+            setTimeout(() => {
+                this.setupPlatformGuide();
+            }, 100);
         }
     }
 
+    // 切換步驟
+    
+goToStep(step) {
+    console.log(`🔄 切換到步驟: ${step}`, '當前選擇:', this.currentSelection);
+    
+    // 確保所有步驟都隱藏
+    const steps = document.querySelectorAll('#picker-page .step');
+    steps.forEach(stepElement => {
+        stepElement.classList.remove('active');
+        console.log(`❌ 隱藏步驟: ${stepElement.id}`);
+    });
+    
+    // 顯示當前步驟
+    const currentStep = document.getElementById(`step${step}`);
+    if (currentStep) {
+        currentStep.classList.add('active');
+        console.log(`✅ 顯示步驟: ${currentStep.id}`);
+    } else {
+        console.error(`❌ 找不到步驟: step${step}`);
+    }
+    
+    // 步驟2的特殊處理
+    if (step === 2) {
+        const mealOptions = document.getElementById('meal-options');
+        const snackOptions = document.getElementById('snack-options');
+        
+        console.log('步驟2 - 顯示對應選項:', this.currentSelection.type);
+        
+        if (this.currentSelection.type === 'meal') {
+            if (mealOptions) mealOptions.style.display = 'flex';
+            if (snackOptions) snackOptions.style.display = 'none';
+            console.log('🍽️ 顯示正餐選項');
+        } else if (this.currentSelection.type === 'snack') {
+            if (mealOptions) mealOptions.style.display = 'none';
+            if (snackOptions) snackOptions.style.display = 'flex';
+            console.log('🍰 顯示點心選項');
+        }
+    }
+    
+    // 步驟3的特殊處理 - 開始抽獎
+    if (step === 3) {
+        console.log('🎰 進入抽獎步驟');
+        // 延遲開始抽獎，確保動畫流暢
+        setTimeout(() => {
+            this.startLottery();
+        }, 400);
+    }
+}
+
     // 開始抽獎
     async startLottery() {
+        console.log('🎰 開始抽獎');
         this.goToStep(3);
         
         const spinner = document.getElementById('spinner');
@@ -201,7 +411,7 @@ class FoodPickerApp {
             document.getElementById('option1').textContent = foods[1];
             document.getElementById('option2').textContent = foods[2];
         } catch (error) {
-            console.error('獲取食物失敗:', error);
+            console.error('❌ 獲取食物失敗:', error);
             document.getElementById('final-result').textContent = '獲取失敗';
             document.getElementById('option1').textContent = '請檢查網路';
             document.getElementById('option2').textContent = '或重新整理';
@@ -230,13 +440,17 @@ class FoodPickerApp {
             const foods = await foodDB.getAllFoods();
             this.renderFoodList(foods);
         } catch (error) {
-            console.error('載入食物列表失敗:', error);
+            console.error('❌ 載入食物列表失敗:', error);
         }
     }
 
     // 渲染食物列表
     renderFoodList(foods) {
         const foodList = document.getElementById('food-list');
+        if (!foodList) {
+            console.warn('❌ 找不到食物列表容器');
+            return;
+        }
         
         if (foods.length === 0) {
             foodList.innerHTML = `
@@ -331,7 +545,7 @@ class FoodPickerApp {
             
             this.showNotification('食物新增成功！');
         } catch (error) {
-            console.error('新增食物失敗:', error);
+            console.error('❌ 新增食物失敗:', error);
             this.showNotification('新增失敗，請重試', 'error');
         }
     }
@@ -347,7 +561,7 @@ class FoodPickerApp {
             await this.loadFoods();
             this.showNotification('食物刪除成功');
         } catch (error) {
-            console.error('刪除食物失敗:', error);
+            console.error('❌ 刪除食物失敗:', error);
             this.showNotification('刪除失敗，請重試', 'error');
         }
     }
@@ -358,10 +572,10 @@ class FoodPickerApp {
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/sw.js')
                 .then(registration => {
-                    console.log('Service Worker 註冊成功:', registration);
+                    console.log('✅ Service Worker 註冊成功:', registration);
                 })
                 .catch(error => {
-                    console.log('Service Worker 註冊失敗:', error);
+                    console.log('❌ Service Worker 註冊失敗:', error);
                 });
         }
 
@@ -369,8 +583,20 @@ class FoodPickerApp {
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             this.deferredPrompt = e;
-            document.getElementById('install-btn').style.display = 'flex';
+            
+            // 只在非 iOS 平台顯示安裝按鈕
+            const platform = this.detectPlatform();
+            const installBtn = document.getElementById('install-btn');
+            if (installBtn && !platform.isIOS) {
+                installBtn.style.display = 'flex';
+                console.log('📱 顯示安裝按鈕');
+            }
         });
+        
+        // 延遲設置平台指引
+        setTimeout(() => {
+            this.setupPlatformGuide();
+        }, 500);
     }
 
     // 安裝 PWA
@@ -419,122 +645,125 @@ class FoodPickerApp {
     }
 
     // 生成 QR Code
-    // 生成真正的 QR Code
-// 使用在線服務生成 QR Code
-generateQRCode() {
-    const container = document.getElementById('qrcode');
-    if (!container) {
-        console.warn('找不到 QR Code 容器');
-        return;
-    }
-    
-    const url = window.location.href;
-    console.log('使用在線服務生成 QR Code，網址:', url);
-    
-    // 使用可靠的 QR Code 在線生成服務
-    const encodedUrl = encodeURIComponent(url);
-    const qrCodeImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodedUrl}&color=6a11cb&bgcolor=ffffff&margin=10&format=png`;
-    
-    // 顯示載中狀態
-    container.innerHTML = `
-        <div style="
-            width: 160px; 
-            height: 160px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center;
-            background: #f8f4ff;
-            border: 2px dashed #6a11cb;
-            border-radius: 8px;
-            color: #6a11cb;
-            font-size: 14px;
-        ">載入 QR Code...</div>
-    `;
-    
-    // 創建圖片元素
-    const img = new Image();
-    img.src = qrCodeImageUrl;
-    img.alt = '掃描安裝今天吃什麼 App';
-    img.style.cssText = `
-        width: 160px; 
-        height: 160px; 
-        border: 2px solid #6a11cb; 
-        border-radius: 8px; 
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        background: white;
-    `;
-    
-    // 圖片載入成功
-    img.onload = () => {
-        console.log('QR Code 圖片載入成功');
-        container.innerHTML = '';
-        container.appendChild(img);
-        
-        // 添加說明文字
-        const instruction = document.createElement('div');
-        instruction.className = 'qrcode-instruction';
-        instruction.innerHTML = '<i class="fas fa-mobile-alt"></i><span>用手機相機掃描安裝</span>';
-        container.appendChild(instruction);
-    };
-    
-    // 圖片載入失敗
-    img.onerror = () => {
-        console.warn('QR Code 圖片載入失敗，使用備用方案');
-        this.generateFallbackQRCode();
-    };
-    
-    // 設定超時（5秒）
-    setTimeout(() => {
-        if (!img.complete) {
-            console.warn('QR Code 載入超時，使用備用方案');
-            this.generateFallbackQRCode();
+    generateQRCode() {
+        const container = document.getElementById('qrcode');
+        if (!container) {
+            console.warn('❌ 找不到 QR Code 容器');
+            return;
         }
-    }, 5000);
-}
-
-// 備用方案
-generateFallbackQRCode() {
-    const container = document.getElementById('qrcode');
-    if (!container) return;
-    
-    const url = window.location.href;
-    const shortUrl = url.length > 30 ? url.substring(0, 30) + '...' : url;
-    
-    container.innerHTML = `
-        <div style="
+        
+        const url = window.location.href;
+        console.log('🔗 生成 QR Code，網址:', url);
+        
+        // 使用可靠的 QR Code 在線生成服務
+        const encodedUrl = encodeURIComponent(url);
+        const qrCodeImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodedUrl}&color=6a11cb&bgcolor=ffffff&margin=10&format=png`;
+        
+        // 顯示載入狀態
+        container.innerHTML = `
+            <div style="
+                width: 160px; 
+                height: 160px; 
+                display: flex; 
+                align-items: center; 
+                justify-content: center;
+                background: #f8f4ff;
+                border: 2px dashed #6a11cb;
+                border-radius: 8px;
+                color: #6a11cb;
+                font-size: 14px;
+            ">載入 QR Code...</div>
+        `;
+        
+        // 創建圖片元素
+        const img = new Image();
+        img.src = qrCodeImageUrl;
+        img.alt = '掃描安裝今天吃什麼 App';
+        img.style.cssText = `
             width: 160px; 
             height: 160px; 
-            background: white;
-            border: 2px solid #6a11cb;
-            border-radius: 8px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 15px;
-            box-sizing: border-box;
+            border: 2px solid #6a11cb; 
+            border-radius: 8px; 
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        ">
-            <div style="font-size: 36px; color: #6a11cb; margin-bottom: 8px;">🍴</div>
-            <div style="font-size: 14px; font-weight: bold; color: #6a11cb; margin-bottom: 4px;">今天吃什麼？</div>
-            <div style="font-size: 10px; color: #999; margin-top: 6px; word-break: break-all; line-height: 1.2;">
-                ${shortUrl}
+            background: white;
+        `;
+        
+        // 圖片載入成功
+        img.onload = () => {
+            console.log('✅ QR Code 圖片載入成功');
+            container.innerHTML = '';
+            container.appendChild(img);
+            
+            // 添加說明文字
+            const instruction = document.createElement('div');
+            instruction.className = 'qrcode-instruction';
+            instruction.innerHTML = '<i class="fas fa-mobile-alt"></i><span>用手機相機掃描安裝</span>';
+            container.appendChild(instruction);
+        };
+        
+        // 圖片載入失敗
+        img.onerror = () => {
+            console.warn('❌ QR Code 圖片載入失敗，使用備用方案');
+            this.generateFallbackQRCode();
+        };
+        
+        // 設定超時（5秒）
+        setTimeout(() => {
+            if (!img.complete) {
+                console.warn('⏰ QR Code 載入超時，使用備用方案');
+                this.generateFallbackQRCode();
+            }
+        }, 5000);
+    }
+
+    // 備用方案
+    generateFallbackQRCode() {
+        const container = document.getElementById('qrcode');
+        if (!container) return;
+        
+        const url = window.location.href;
+        const shortUrl = url.length > 30 ? url.substring(0, 30) + '...' : url;
+        
+        container.innerHTML = `
+            <div style="
+                width: 160px; 
+                height: 160px; 
+                background: white;
+                border: 2px solid #6a11cb;
+                border-radius: 8px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                padding: 15px;
+                box-sizing: border-box;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            ">
+                <div style="font-size: 36px; color: #6a11cb; margin-bottom: 8px;">🍴</div>
+                <div style="font-size: 14px; font-weight: bold; color: #6a11cb; margin-bottom: 4px;">今天吃什麼？</div>
+                <div style="font-size: 10px; color: #999; margin-top: 6px; word-break: break-all; line-height: 1.2;">
+                    ${shortUrl}
+                </div>
             </div>
-        </div>
-        <div class="qrcode-instruction">
-            <i class="fas fa-link"></i>
-            <span>請手動複製網址</span>
-        </div>
-    `;
-    
-    console.log('使用備用 QR Code 顯示');
-}
+            <div class="qrcode-instruction">
+                <i class="fas fa-link"></i>
+                <span>請手動複製網址</span>
+            </div>
+        `;
+        
+        console.log('🔄 使用備用 QR Code 顯示');
+    }
 
     // 顯示通知
     showNotification(message, type = 'success') {
         const notification = document.getElementById('notification');
         const notificationText = document.getElementById('notification-text');
+        
+        if (!notification || !notificationText) {
+            console.warn('❌ 通知元素未找到，無法顯示通知:', message);
+            return;
+        }
         
         notificationText.textContent = message;
         notification.className = 'notification';
@@ -553,20 +782,28 @@ generateFallbackQRCode() {
     }
 }
 
-// 應用啟動
-document.addEventListener('DOMContentLoaded', () => {
+// 應用啟動 - 確保 DOM 完全載入
+function initApp() {
+    // 檢查必要元素是否存在
+    const requiredElements = [
+        'notification', 'notification-text', 'next1', 'next2'
+    ];
+    
+    const missingElements = requiredElements.filter(id => !document.getElementById(id));
+    
+    if (missingElements.length > 0) {
+        console.error('❌ 缺少必要元素:', missingElements);
+        setTimeout(initApp, 100);
+        return;
+    }
+    
+    console.log('✅ 所有必要元素已載入，啟動應用...');
     new FoodPickerApp();
-});
+}
 
-// 註冊 Service Worker
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-            .then(registration => {
-                console.log('ServiceWorker 註冊成功: ', registration);
-            })
-            .catch(registrationError => {
-                console.log('ServiceWorker 註冊失敗: ', registrationError);
-            });
-    });
+// 多種載入事件確保執行
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initApp);
+} else {
+    initApp();
 }

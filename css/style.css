@@ -2,7 +2,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+    font-family: 'Segoe UI', 'Microsoft JhengHei', '微軟正黑體', sans-serif;
 }
 
 :root {
@@ -108,6 +108,7 @@ h1 {
     display: block;
 }
 
+/* 步驟控制 - 修復重疊問題 */
 .step {
     display: none;
 }
@@ -435,14 +436,40 @@ input:focus, select:focus {
 
 .qrcode-container {
     display: flex;
-    justify-content: center;
-    margin: 15px 0;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
 }
 
 #qrcode {
-    border: 10px solid white;
-    border-radius: 10px;
-    box-shadow: var(--shadow);
+    width: 160px;
+    height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border-radius: 8px;
+    border: 2px solid #f0f0f0;
+}
+
+#qrcode img {
+    border-radius: 6px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.qrcode-instruction {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #666;
+    background: #f8f4ff;
+    padding: 8px 12px;
+    border-radius: 20px;
+}
+
+.qrcode-instruction i {
+    color: #6a11cb;
 }
 
 /* 空狀態樣式 */
@@ -490,6 +517,98 @@ input:focus, select:focus {
 
 .notification.warning {
     background: var(--warning);
+}
+
+/* 平台安裝指引樣式 */
+.platform-guide {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 10px;
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    display: none;
+}
+
+.platform-guide h4 {
+    margin: 0 0 12px 0;
+    color: #495057;
+    font-size: 16px;
+    text-align: center;
+}
+
+.install-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.step {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px;
+    background: white;
+    border-radius: 8px;
+    border-left: 4px solid #6a11cb;
+}
+
+.step-number {
+    background: #6a11cb;
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.step-text {
+    font-size: 14px;
+    color: #495057;
+    line-height: 1.4;
+}
+
+/* iOS 特定樣式 */
+.ios-guide .step {
+    border-left-color: #007aff;
+}
+
+.ios-guide .step-number {
+    background: #007aff;
+}
+
+/* Android 特定樣式 */
+.android-guide .step {
+    border-left-color: #34a853;
+}
+
+.android-guide .step-number {
+    background: #34a853;
+}
+
+/* 平台檢測提示 */
+.platform-hint {
+    text-align: center;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.platform-hint.ios {
+    background: #e3f2fd;
+    color: #1976d2;
+    border: 1px solid #bbdefb;
+}
+
+.platform-hint.android {
+    background: #e8f5e8;
+    color: #2e7d32;
+    border: 1px solid #c8e6c9;
 }
 
 /* 動畫 */
@@ -564,41 +683,22 @@ input:focus, select:focus {
 .food-list::-webkit-scrollbar-thumb:hover {
     background: var(--secondary);
 }
-/* QR Code 樣式 */
-.qrcode-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
+/* 步驟控制 - 修復重疊問題 */
+#picker-page .step {
+    display: none !important;
 }
 
-#qrcode {
-    width: 160px;
-    height: 160px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: white;
-    border-radius: 8px;
-    border: 2px solid #f0f0f0;
+#picker-page .step.active {
+    display: block !important;
+    animation: fadeIn 0.5s ease;
 }
 
-#qrcode img {
-    border-radius: 6px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+/* 確保其他頁面也正確隱藏 */
+.page {
+    display: none !important;
 }
 
-.qrcode-instruction {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 14px;
-    color: #666;
-    background: #f8f4ff;
-    padding: 8px 12px;
-    border-radius: 20px;
-}
-
-.qrcode-instruction i {
-    color: #6a11cb;
+.page.active {
+    display: block !important;
+    animation: fadeIn 0.5s ease;
 }

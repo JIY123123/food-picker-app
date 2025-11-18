@@ -13,19 +13,19 @@ class FoodDB {
             const request = indexedDB.open(this.DB_NAME, this.DB_VERSION);
             
             request.onerror = () => {
-                console.error('資料庫開啟失敗:', request.error);
+                console.error('❌ 資料庫開啟失敗:', request.error);
                 reject(request.error);
             };
             
             request.onsuccess = () => {
                 this.db = request.result;
-                console.log('資料庫開啟成功');
+                console.log('✅ 資料庫開啟成功');
                 resolve(this.db);
             };
             
             request.onupgradeneeded = (event) => {
                 const db = event.target.result;
-                console.log('資料庫升級，版本:', event.oldVersion, '→', event.newVersion);
+                console.log('🔄 資料庫升級，版本:', event.oldVersion, '→', event.newVersion);
                 
                 // 刪除舊的物件儲存庫（如果存在）
                 if (db.objectStoreNames.contains(this.STORE_NAME)) {
@@ -42,7 +42,7 @@ class FoodDB {
                 store.createIndex('type', 'type', { unique: false });
                 store.createIndex('name', 'name', { unique: false });
                 
-                console.log('物件儲存庫建立完成');
+                console.log('✅ 物件儲存庫建立完成');
                 
                 // 添加預設資料
                 this.addDefaultFoods(store);
@@ -100,7 +100,7 @@ class FoodDB {
             store.add(food);
         });
         
-        console.log('預設食物資料已添加');
+        console.log('✅ 預設食物資料已添加');
     }
 
     // 獲取所有食物

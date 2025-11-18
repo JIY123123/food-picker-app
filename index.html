@@ -132,11 +132,49 @@
                             <i class="fas fa-mobile-alt"></i>
                         </div>
                         <h3>安裝到手機</h3>
-                        <p>點擊下方按鈕將App安裝到手機主畫面</p>
+                        <p>將App安裝到手機主畫面，像原生App一樣使用</p>
                         <button class="btn" id="install-btn">
                             <i class="fas fa-download"></i>
                             安裝App
                         </button>
+                        
+                        <!-- iOS 安裝指引 -->
+                        <div id="ios-install-guide" class="platform-guide">
+                            <h4>📱 iPhone 安裝步驟</h4>
+                            <div class="install-steps">
+                                <div class="step">
+                                    <span class="step-number">1</span>
+                                    <span class="step-text">點擊 Safari 的分享按鈕 (□↑)</span>
+                                </div>
+                                <div class="step">
+                                    <span class="step-number">2</span>
+                                    <span class="step-text">選擇「加入主畫面」</span>
+                                </div>
+                                <div class="step">
+                                    <span class="step-number">3</span>
+                                    <span class="step-text">點擊「新增」完成安裝</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Android 安裝指引 -->
+                        <div id="android-install-guide" class="platform-guide">
+                            <h4>🤖 Android 安裝步驟</h4>
+                            <div class="install-steps">
+                                <div class="step">
+                                    <span class="step-number">1</span>
+                                    <span class="step-text">點擊上方的「安裝App」按鈕</span>
+                                </div>
+                                <div class="step">
+                                    <span class="step-number">2</span>
+                                    <span class="step-text">確認安裝到主畫面</span>
+                                </div>
+                                <div class="step">
+                                    <span class="step-number">3</span>
+                                    <span class="step-text">像一般App一樣使用</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     
                     <div class="share-card">
@@ -169,14 +207,13 @@
             </div>
         </div>
     </div>
-    
+
     <div class="notification" id="notification">
         <i class="fas fa-check-circle"></i>
         <span id="notification-text">操作成功！</span>
     </div>
 
     <!-- JavaScript -->
-    
     <script src="js/db.js"></script>
     <script src="js/app.js"></script>
 </body>
