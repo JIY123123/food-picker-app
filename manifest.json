@@ -4,8 +4,8 @@
     "description": "隨機選擇今天要吃什麼，支援自訂食物清單",
     "start_url": "/",
     "display": "standalone",
-    "background_color": "#6a11cb",
-    "theme_color": "#6a11cb",
+    "background_color": "#8B5FBF",
+    "theme_color": "#8B5FBF",
     "orientation": "portrait",
     "categories": ["food", "lifestyle", "productivity"],
     "lang": "zh-Hant",
@@ -21,6 +21,12 @@
             "sizes": "512x512",
             "type": "image/png",
             "purpose": "any"
+        },
+        {
+            "src": "icons/maskable-icon.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable"
         },
         {
             "src": "icons/maskable-icon.png",

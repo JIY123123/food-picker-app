@@ -6,22 +6,22 @@
 }
 
 :root {
-    --primary: #6a11cb;
-    --secondary: #2575fc;
+    --primary: #8B5FBF;    /* 更柔和的紫色 */
+    --secondary: #6C8AE5;  /* 更柔和的藍色 */
     --light: #f8f4ff;
-    --dark: #333;
-    --gray: #666;
+    --dark: #4A4A4A;       /* 更柔和的深色 */
+    --gray: #777;          /* 更柔和的灰色 */
     --light-gray: #f5f5f5;
-    --success: #4CAF50;
-    --danger: #f44336;
-    --warning: #ff9800;
+    --success: #5CB85C;    /* 更柔和的綠色 */
+    --danger: #D9534F;     /* 更柔和的紅色 */
+    --warning: #F0AD4E;    /* 更柔和的橙色 */
     --border-radius: 15px;
-    --shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    --shadow: 0 5px 15px rgba(0, 0, 0, 0.08); /* 更柔和的陰影 */
     --transition: all 0.3s ease;
 }
 
 body {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    background: linear-gradient(135deg, #E3F2FD 0%, #F3E5F5 100%); /* 更柔和的漸層 */
     min-height: 100vh;
     padding: 20px;
     color: var(--dark);
@@ -30,11 +30,12 @@ body {
 .container {
     max-width: 500px;
     margin: 0 auto;
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.98); /* 更透明的背景 */
     border-radius: var(--border-radius);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); /* 更柔和的陰影 */
     overflow: hidden;
     backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
 header {
@@ -43,6 +44,15 @@ header {
     background: linear-gradient(to right, var(--primary), var(--secondary));
     color: white;
     position: relative;
+}
+
+.creator-credit {
+    position: absolute;
+    bottom: 8px;
+    right: 15px;
+    font-size: 11px;
+    opacity: 0.8;
+    font-weight: 300;
 }
 
 h1 {
@@ -108,13 +118,20 @@ h1 {
     display: block;
 }
 
-/* 步驟控制 - 修復重疊問題 */
+/* 步驟控制 */
 .step {
     display: none;
 }
 
 .step.active {
     display: block;
+}
+
+.step-description {
+    text-align: center;
+    color: var(--gray);
+    margin-bottom: 30px;
+    font-size: 14px;
 }
 
 h2 {
@@ -131,6 +148,100 @@ h3 {
     font-size: 18px;
 }
 
+/* 情境選擇 */
+.scenario-options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin: 30px 0;
+}
+
+.scenario-card {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 20px;
+    text-align: center;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    transition: var(--transition);
+    border: 2px solid transparent;
+}
+
+.scenario-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.scenario-card.selected {
+    border-color: var(--primary);
+    background: var(--light);
+    transform: scale(1.02);
+}
+
+.scenario-icon {
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+.scenario-name {
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 5px;
+}
+
+.scenario-desc {
+    font-size: 12px;
+    color: var(--gray);
+}
+
+/* 類型選擇 */
+.type-selection {
+    display: flex;
+    gap: 15px;
+    margin: 30px 0;
+    justify-content: center;
+}
+
+/* 自訂清單 */
+.custom-lists-container {
+    background: var(--light);
+    padding: 20px;
+    border-radius: var(--border-radius);
+    margin-top: 20px;
+}
+
+.custom-list-item {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: var(--transition);
+    border: 2px solid transparent;
+}
+
+.custom-list-item:hover {
+    transform: translateX(3px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.custom-list-item.selected {
+    border-color: var(--primary);
+    background: var(--light);
+}
+
+.list-name {
+    font-weight: 600;
+    color: var(--dark);
+}
+
+.list-count {
+    font-size: 12px;
+    color: var(--gray);
+    margin-top: 5px;
+}
+
+/* 選項卡片 */
 .options {
     display: flex;
     flex-wrap: wrap;
@@ -152,8 +263,8 @@ h3 {
 }
 
 .option-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
 }
 
 .option-card.selected {
@@ -172,6 +283,7 @@ h3 {
     color: var(--dark);
 }
 
+/* 按鈕 */
 .btn {
     display: flex;
     align-items: center;
@@ -191,8 +303,8 @@ h3 {
 }
 
 .btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 7px 15px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.15);
 }
 
 .btn:active {
@@ -204,6 +316,7 @@ h3 {
     cursor: not-allowed;
     transform: none;
     box-shadow: none;
+    opacity: 0.6;
 }
 
 .btn-secondary {
@@ -216,6 +329,55 @@ h3 {
     background: var(--light);
 }
 
+.btn-outline {
+    background: transparent;
+    color: var(--primary);
+    border: 2px solid var(--primary);
+    flex: 1;
+}
+
+.btn-outline:hover {
+    background: var(--light);
+}
+
+.btn-outline.active {
+    background: var(--primary);
+    color: white;
+}
+
+/* 動作按鈕組 */
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+
+.action-buttons .btn {
+    flex: 1;
+    min-width: 120px;
+    margin-top: 0;
+}
+
+.action-buttons .btn-outline {
+    flex: 0.5;
+    min-width: 140px;
+}
+
+/* 情境指示器 */
+.scenario-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--light);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    color: var(--primary);
+    margin-bottom: 20px;
+}
+
+/* 結果容器 */
 .result-container {
     text-align: center;
     padding: 20px;
@@ -239,6 +401,37 @@ h3 {
     animation: pulse 2s infinite;
 }
 
+/* 營養資訊 */
+.nutrition-info {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin: 20px 0;
+    padding: 20px;
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+}
+
+.nutrition-item {
+    text-align: center;
+}
+
+.nutrition-item .label {
+    display: block;
+    font-size: 12px;
+    color: var(--gray);
+    margin-bottom: 5px;
+}
+
+.nutrition-item .value {
+    display: block;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--dark);
+}
+
+/* 其他選項 */
 .other-options {
     display: flex;
     justify-content: space-around;
@@ -267,6 +460,7 @@ h3 {
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin: 30px auto;
+    display: none;
 }
 
 .progress-bar {
@@ -297,6 +491,20 @@ h3 {
     margin-bottom: 20px;
 }
 
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.form-row-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
 label {
     display: block;
     margin-bottom: 8px;
@@ -316,7 +524,43 @@ input, select {
 input:focus, select:focus {
     outline: none;
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(106, 17, 203, 0.1);
+    box-shadow: 0 0 0 3px rgba(139, 95, 191, 0.1);
+}
+
+/* 快速模板 */
+.quick-templates {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: var(--light);
+    border-radius: var(--border-radius);
+}
+
+.quick-templates h4 {
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: var(--gray);
+}
+
+.template-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.btn-template {
+    padding: 8px 12px;
+    border: 1px solid var(--primary);
+    background: white;
+    color: var(--primary);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: var(--transition);
+}
+
+.btn-template:hover {
+    background: var(--light);
+    transform: translateY(-1px);
 }
 
 /* 食物列表樣式 */
@@ -340,34 +584,30 @@ input:focus, select:focus {
     background: white;
     border-radius: 10px;
     margin-bottom: 10px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.08);
     border-left: 4px solid var(--primary);
     transition: var(--transition);
 }
 
 .food-item:hover {
-    transform: translateX(5px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    transform: translateX(3px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.12);
 }
 
 .food-info {
     display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.food-type {
-    background: var(--primary);
-    color: white;
-    padding: 5px 10px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
+    flex-direction: column;
+    gap: 5px;
 }
 
 .food-name {
     font-weight: 600;
     color: var(--dark);
+}
+
+.food-nutrition {
+    font-size: 12px;
+    color: var(--gray);
 }
 
 .food-actions {
@@ -386,14 +626,130 @@ input:focus, select:focus {
     border-radius: 5px;
 }
 
-.action-btn.edit:hover {
-    color: var(--primary);
-    background: var(--light);
-}
-
 .action-btn.delete:hover {
     color: var(--danger);
     background: #ffebee;
+}
+
+/* 偏好設定頁面 */
+.preference-section {
+    background: white;
+    padding: 20px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    margin-bottom: 20px;
+}
+
+.preference-list {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.preference-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background: var(--light);
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+
+.btn-remove {
+    background: none;
+    border: none;
+    color: var(--danger);
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 4px;
+    transition: var(--transition);
+}
+
+.btn-remove:hover {
+    background: #ffebee;
+}
+
+.custom-list-creator {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.custom-list-creator input {
+    flex: 1;
+}
+
+.list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.list-actions {
+    display: flex;
+    gap: 5px;
+}
+
+.btn-edit, .btn-delete {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 4px;
+    transition: var(--transition);
+}
+
+.btn-edit {
+    color: var(--primary);
+}
+
+.btn-edit:hover {
+    background: var(--light);
+}
+
+.btn-delete {
+    color: var(--danger);
+}
+
+.btn-delete:hover {
+    background: #ffebee;
+}
+
+.list-foods {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.list-food {
+    background: var(--light);
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    color: var(--dark);
+}
+
+.scenario-settings {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.setting-item label {
+    margin-bottom: 0;
+    flex: 1;
+}
+
+.setting-item input {
+    width: 100px;
+    text-align: center;
 }
 
 /* 分享頁面樣式 */
@@ -413,8 +769,8 @@ input:focus, select:focus {
 }
 
 .share-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.12);
 }
 
 .share-icon {
@@ -457,6 +813,49 @@ input:focus, select:focus {
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
+.qrcode-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    color: var(--primary);
+}
+
+.qrcode-fallback {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 160px;
+    height: 160px;
+    background: white;
+    border: 2px solid var(--primary);
+    border-radius: 8px;
+    text-align: center;
+    padding: 15px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.fallback-icon {
+    font-size: 36px;
+    color: var(--primary);
+    margin-bottom: 8px;
+}
+
+.fallback-title {
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--primary);
+    margin-bottom: 4px;
+}
+
+.fallback-url {
+    font-size: 10px;
+    color: #999;
+    word-break: break-all;
+    line-height: 1.2;
+}
+
 .qrcode-instruction {
     display: flex;
     align-items: center;
@@ -469,54 +868,7 @@ input:focus, select:focus {
 }
 
 .qrcode-instruction i {
-    color: #6a11cb;
-}
-
-/* 空狀態樣式 */
-.empty-state {
-    text-align: center;
-    padding: 40px 20px;
-    color: var(--gray);
-}
-
-.empty-state i {
-    font-size: 60px;
-    margin-bottom: 15px;
-    color: #ddd;
-}
-
-.empty-state p {
-    font-size: 16px;
-}
-
-/* 通知樣式 */
-.notification {
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%) translateY(-100px);
-    background: var(--success);
-    color: white;
-    padding: 15px 25px;
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    transition: transform 0.3s ease;
-}
-
-.notification.show {
-    transform: translateX(-50%) translateY(0);
-}
-
-.notification.error {
-    background: var(--danger);
-}
-
-.notification.warning {
-    background: var(--warning);
+    color: var(--primary);
 }
 
 /* 平台安裝指引樣式 */
@@ -542,18 +894,18 @@ input:focus, select:focus {
     gap: 10px;
 }
 
-.step {
+.install-steps .step {
     display: flex;
     align-items: center;
     gap: 12px;
     padding: 8px;
     background: white;
     border-radius: 8px;
-    border-left: 4px solid #6a11cb;
+    border-left: 4px solid var(--primary);
 }
 
 .step-number {
-    background: #6a11cb;
+    background: var(--primary);
     color: white;
     width: 24px;
     height: 24px;
@@ -611,6 +963,75 @@ input:focus, select:focus {
     border: 1px solid #c8e6c9;
 }
 
+.platform-hint.other {
+    background: #fff3e0;
+    color: #ef6c00;
+    border: 1px solid #ffe0b2;
+}
+
+/* 空狀態樣式 */
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--gray);
+}
+
+.empty-state i {
+    font-size: 60px;
+    margin-bottom: 15px;
+    color: #ddd;
+}
+
+.empty-state p {
+    font-size: 16px;
+}
+
+/* 通知樣式 */
+.notification {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100px);
+    background: var(--success);
+    color: white;
+    padding: 15px 25px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: transform 0.3s ease;
+}
+
+.notification.show {
+    transform: translateX(-50%) translateY(0);
+}
+
+.notification.error {
+    background: var(--danger);
+}
+
+.notification.warning {
+    background: var(--warning);
+}
+
+/* 頁尾樣式 */
+.footer {
+    text-align: center;
+    padding: 20px;
+    margin-top: 30px;
+    color: var(--gray);
+    font-size: 12px;
+    border-top: 1px solid #eee;
+}
+
+.creator-signature {
+    margin-top: 8px;
+    font-weight: 500;
+    color: var(--primary);
+}
+
 /* 動畫 */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
@@ -624,8 +1045,14 @@ input:focus, select:focus {
 
 @keyframes pulse {
     0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
+    50% { transform: scale(1.02); }
     100% { transform: scale(1); }
+}
+
+@keyframes pulse-glow {
+    0% { box-shadow: 0 0 0 0 rgba(139, 95, 191, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(139, 95, 191, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(139, 95, 191, 0); }
 }
 
 /* 響應式設計 */
@@ -650,6 +1077,10 @@ input:focus, select:focus {
         padding: 15px;
     }
     
+    .scenario-options {
+        grid-template-columns: 1fr;
+    }
+    
     .option-card {
         width: 120px;
         padding: 15px;
@@ -663,26 +1094,57 @@ input:focus, select:focus {
     .share-card {
         padding: 20px;
     }
+    
+    .nutrition-info {
+        grid-template-columns: 1fr;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+    }
+    
+    .type-selection {
+        flex-direction: column;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-row-3 {
+        grid-template-columns: 1fr;
+    }
+    
+    .creator-credit {
+        position: static;
+        margin-top: 10px;
+        font-size: 10px;
+    }
 }
 
 /* 滾動條樣式 */
-.food-list::-webkit-scrollbar {
+.food-list::-webkit-scrollbar,
+.preference-list::-webkit-scrollbar {
     width: 6px;
 }
 
-.food-list::-webkit-scrollbar-track {
+.food-list::-webkit-scrollbar-track,
+.preference-list::-webkit-scrollbar-track {
     background: #f1f1f1;
     border-radius: 3px;
 }
 
-.food-list::-webkit-scrollbar-thumb {
+.food-list::-webkit-scrollbar-thumb,
+.preference-list::-webkit-scrollbar-thumb {
     background: var(--primary);
     border-radius: 3px;
 }
 
-.food-list::-webkit-scrollbar-thumb:hover {
+.food-list::-webkit-scrollbar-thumb:hover,
+.preference-list::-webkit-scrollbar-thumb:hover {
     background: var(--secondary);
 }
+
 /* 步驟控制 - 修復重疊問題 */
 #picker-page .step {
     display: none !important;
@@ -701,4 +1163,111 @@ input:focus, select:focus {
 .page.active {
     display: block !important;
     animation: fadeIn 0.5s ease;
+}
+/* === 按鈕點擊修復 === */
+/* 確保所有可點擊元素都有正確的游標 */
+.btn, .btn-outline, .btn-secondary, 
+.tab, .scenario-card, .option-card,
+.action-btn, .btn-template, .btn-remove,
+.btn-edit, .btn-delete {
+    cursor: pointer !important;
+    pointer-events: auto !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+}
+
+/* 確保按鈕在禁用狀態下仍然可見但不可點擊 */
+.btn:disabled {
+    cursor: not-allowed !important;
+    opacity: 0.6 !important;
+    pointer-events: none !important;
+}
+
+/* 移除任何可能遮擋點擊的偽元素 */
+.tab::before, .btn::before, .scenario-card::before,
+.option-card::before, .action-btn::before {
+    display: none !important;
+}
+
+/* 確保 z-index 正確，避免元素被遮擋 */
+.tab, .btn, .scenario-card, .option-card,
+.action-btn, .btn-template {
+    position: relative;
+    z-index: 1;
+}
+
+/* 點擊反饋效果 */
+.tab:active, .btn:active, .scenario-card:active, 
+.option-card:active, .action-btn:active {
+    transform: scale(0.98) !important;
+    transition: transform 0.1s ease !important;
+}
+
+/* 確保自訂清單項目可點擊 */
+.custom-list-item {
+    cursor: pointer !important;
+    pointer-events: auto !important;
+}
+
+.custom-list-item:active {
+    transform: scale(0.98) !important;
+}
+
+/* 確保類型選擇按鈕可點擊 */
+.type-selection .btn-outline {
+    cursor: pointer !important;
+}
+
+.type-selection .btn-outline:active {
+    transform: scale(0.95) !important;
+}
+
+/* 確保快速模板按鈕可點擊 */
+.template-buttons .btn-template {
+    cursor: pointer !important;
+}
+
+.template-buttons .btn-template:active {
+    transform: scale(0.95) !important;
+}
+
+/* 確保偏好設定中的按鈕可點擊 */
+.preference-item .btn-remove {
+    cursor: pointer !important;
+}
+
+.list-actions .btn-edit,
+.list-actions .btn-delete {
+    cursor: pointer !important;
+}
+
+/* 確保安裝和分享按鈕可點擊 */
+#install-btn, #share-link-btn {
+    cursor: pointer !important;
+}
+
+#install-btn:active, #share-link-btn:active {
+    transform: scale(0.98) !important;
+}
+
+/* 確保所有互動元素在移動設備上有足夠的點擊區域 */
+@media (max-width: 480px) {
+    .tab, .btn, .scenario-card, .option-card {
+        min-height: 44px !important;
+        min-width: 44px !important;
+    }
+    
+    .action-btn, .btn-template, .btn-remove {
+        padding: 12px !important;
+        min-height: 44px !important;
+        min-width: 44px !important;
+    }
+}
+
+/* 強制覆蓋任何可能阻礙點擊的樣式 */
+* {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1) !important;
+    tap-highlight-color: rgba(0, 0, 0, 0.1) !important;
 }
